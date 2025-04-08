@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Run Tests
+        env:
+          GOREST_ACCESS_TOKEN: ${{ secrets.GOREST_ACCESS_TOKEN }}
+        run: |
+          pnpm test --filter 'lab_1'
+          pnpm test --filter 'lab_2'
+          pnpm test --filter 'lab_3'
+          pnpm test --filter 'lab_4'
+          pnpm test --filter 'lab_5'
+          pnpm test --filter 'lab_6'
